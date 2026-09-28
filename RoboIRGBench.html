@@ -189,21 +189,10 @@
     .paper-figure figcaption { margin: 14px 0 0; color: var(--muted); font-size: 15px; }
     .fig-note { margin: 14px 0 0; color: #a8a39c; font-size: 14px; font-weight: 500; }
     .fig-take { margin: 6px 0 0; max-width: 760px; color: #3f3c38; font-size: 16px; }
-    .abstract-split {
-      display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
-      gap: 28px 36px; align-items: stretch;
-    }
-    .abstract-side { display: flex; flex-direction: column; gap: 12px; min-height: 100%; }
-    .abstract-side .paper-figure {
-      margin: 0; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 10px;
-    }
-    .abstract-side .paper-figure:first-child { flex: 387 1 0; }
-    .abstract-side .paper-figure:last-child { flex: 294 1 0; }
-    .abstract-side .paper-figure img { width: 100%; height: 100%; object-fit: contain; }
     .abstract {
       width: 100%; margin: 0; padding: 4px 0 4px 18px;
       border-left: 3px solid #d9d3c8;
-      font-size: 18px; line-height: 1.7; color: #3f3c38;
+      font-size: 18px; line-height: 1.75; color: #3f3c38;
     }
     .abstract p { margin: 0 0 16px; }
     .abstract p:last-child { margin-bottom: 0; }
@@ -237,7 +226,7 @@
       font: 700 clamp(22px, 2vw, 28px)/1.3 Manrope, sans-serif; letter-spacing: -.03em;
     }
     .note {
-      margin: 10px 0 0; max-width: 78em; color: var(--muted);
+      margin: 10px 0 0; max-width: none; color: var(--muted);
       font: 400 15px/1.6 "DM Sans", sans-serif;
     }
     .qa-row.wide .a { margin-bottom: 0; }
@@ -249,7 +238,14 @@
       width: 100%; max-width: none; height: auto; margin: 0;
       aspect-ratio: auto; object-fit: fill; transform: none;
     }
-    .qa-row.split .note { margin-top: 16px; font-size: 15px; line-height: 1.7; max-width: none; }
+    .qa-row.plain {
+      grid-template-columns: 1fr; align-items: start; margin-top: 40px;
+    }
+    .qa-row.plain .qa { padding: 2px 0 2px 18px; border-left: 3px solid #d9d3c8; }
+    .qa-row.plain .q { margin-bottom: 10px; }
+    .qa-row.plain .a { font-size: clamp(22px, 2vw, 28px); line-height: 1.32; }
+    .qa-row.plain .note { margin-top: 12px; max-width: none; font-size: 16px; line-height: 1.7; }
+    .qa-row.plain + .qa-row.plain { margin-top: 28px; padding-top: 32px; }
     .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
     table { border-collapse: collapse; width: 100%; font-size: 13px; }
     th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid var(--line); }
@@ -457,25 +453,16 @@
       </div>
     </section>
 
-    <section class="section tight" id="abstract">
-      <div class="wrap abstract-split">
-        <div>
-          <h2 class="section-title">Abstract</h2>
-          <div class="abstract">
-            <p>Vision-language-action models have shown strong capabilities in robotic manipulation, yet existing benchmarks typically assume that task-relevant information is explicitly specified in the instruction. In practice, humans frequently refer to objects, quantities, and relations implicitly, requiring robots to recover the intended target from linguistic and perceptual context.</p>
-            <p>We study this capability as implicit referential grounding and introduce RoboIRGBench, a manipulation benchmark designed to evaluate it. Built upon RoboMME, RoboIRGBench contains 40 variants derived from 11 tasks and covers four challenges: direct, reasoning-mediated, spatial, and contextual referential grounding.</p>
-            <p>Because resolving an implicit reference often depends on previously established context, we evaluate representative VLAs spanning different memory mechanisms. Models that perform well under explicit instructions can degrade sharply when the same task-relevant information must be recovered from context. Reasoning-mediated and spatial references are particularly challenging. Models using an external VLM are more robust, but replacing that VLM with a stronger model does not eliminate the gap.</p>
-            <p>The same gap persists on a Franka Research 3, as both incorrect referent grounding and downstream execution failures.</p>
+    <section class="section" id="abstract">
+      <div class="wrap">
+        <h2 class="section-title">Abstract</h2>
+        <div class="abstract">
+            <p>Vision-Language-Action (VLA) models have shown strong capabilities in robotic manipulation, yet existing benchmarks typically assume that task-relevant information is explicitly specified in the instruction. In practice, however, humans frequently refer to objects, quantities, and relations implicitly, requiring robots to recover the intended target from linguistic and perceptual context.</p>
+            <p>We study this capability as <b>Implicit Referential Grounding (IRG)</b> and introduce <b>RoboIRG-Bench</b>, a manipulation benchmark designed to systematically evaluate it. Built upon RoboMME, RoboIRG-Bench contains 40 variants derived from 11 tasks and covers four challenges, including direct, reasoning-mediated, spatial, and contextual referential grounding.</p>
+            <p>As IRG often requires retaining and retrieving previously established context, we evaluate representative VLAs spanning different memory mechanisms. Our evaluation reveals a noticeable referential robustness gap. Models that perform well under explicit instructions can degrade sharply when the same task-relevant information must be recovered from context. Reasoning-mediated and spatial references are particularly challenging, while models using external VLMs show greater robustness but still exhibit significant failures. Moreover, replacing the external VLM with a stronger model does not eliminate these gaps.</p>
+            <p>We further validate these findings on a Franka Research 3 robot arm, where the gap persists under real-world manipulation and manifests as both incorrect referent grounding and downstream execution failures.</p>
+            <p>These results establish IRG as a distinct and underexplored capability for reliable robotic instruction following and highlight the need for VLAs that can robustly integrate language, perception, reasoning, and action.</p>
           </div>
-        </div>
-        <div class="abstract-side">
-          <figure class="paper-figure">
-            <img src="benchmark_com.png" alt="Comparison of implicit referential grounding coverage across robotic manipulation benchmarks." />
-          </figure>
-          <figure class="paper-figure">
-            <img src="coverage.png" alt="Distribution of referring expressions across the four implicit settings." />
-          </figure>
-        </div>
       </div>
     </section>
 
@@ -502,35 +489,26 @@
             <img src="isolate.png" alt="Suite-averaged success when implicit references are replaced by explicit targets." />
           </figure>
         </div>
-        <div class="qa-row split">
+        <div class="qa-row plain">
           <div class="qa">
             <p class="q">Can a stronger external VLM solve IRG?</p>
             <p class="a">A stronger VLM improves IRG performance, but does not eliminate the referential robustness gap.</p>
             <p class="note">Replacing Qwen-VL with Gemini substantially improves performance across several IRG settings, especially reasoning-mediated, contextual, and spatial grounding. Performance still remains below the explicit baseline.</p>
           </div>
-          <figure class="paper-figure">
-            <img src="gemini3.1pro.png" alt="Success rates of Qwen-VL and Gemini 3.1 Pro on BinFill, PickXtimes, and SwingXtimes." />
-          </figure>
         </div>
-        <div class="qa-row split flip length">
+        <div class="qa-row plain">
           <div class="qa">
             <p class="q">How does longer context affect IRG?</p>
             <p class="a">IRG performance generally declines as more linguistic context is introduced.</p>
             <p class="note">Adding referent reinforcement, distractor context, and an action cue produces an overall downward trend. Longer intervening context makes it harder for models to preserve and correctly recover the intended referent.</p>
           </div>
-          <figure class="paper-figure">
-            <img src="length.png" alt="Effect of increasing linguistic context on contextual referential grounding." />
-          </figure>
         </div>
-        <div class="qa-row split">
+        <div class="qa-row plain">
           <div class="qa">
             <p class="q">Does the referential robustness gap persist in the real world?</p>
             <p class="a">Both policies show clear performance degradation under IRG compared with explicit instructions.</p>
             <p class="note">Reasoning-mediated grounding is the most challenging in real-world manipulation, while contextual and spatial grounding also lead to clear degradation. Overall, both policies perform substantially better under explicit instructions than under IRG.</p>
           </div>
-          <figure class="paper-figure">
-            <img src="real.png" alt="Real-world success rates on PutInBox and PickByCount under explicit instructions and four IRG settings." />
-          </figure>
         </div>
       </div>
     </section>
