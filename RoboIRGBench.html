@@ -373,7 +373,8 @@
     .demo-block .section-heading h2 { font-size: 28px; margin: 0 0 4px; }
     .demo-block .section-heading p { font-size: 15px; color: #a8a39c; }
     .demo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
-    .demo-pair h3 { margin: 0 0 8px; font-size: 16px; }
+    .demo-pair h3 span.ok { color: #2f6b45; }
+    .demo-pair h3 span.bad { color: #9e4034; }
     .demo-pair h3 span { display: block; margin-top: 2px; color: #a8a39c; font-size: 13px; font-weight: 500; }
     .demo-pair h3 span.demo-outcome { display: inline; margin: 0; color: inherit; font-size: inherit; font-weight: 800; }
     .demo-control { margin: 0 0 14px; }
@@ -386,8 +387,44 @@
     .selector button.on { background: var(--forest); border-color: var(--forest); color: #fff; }
     .selector button:disabled { color: #b7b1a8; cursor: default; }
     .demo-goal { margin: 4px 0 12px; color: #3f3c38; font-size: 14px; line-height: 1.55; }
+    #real-demos .demo-pair { row-gap: 8px; }
+    #real-demos .demo-goal {
+      align-self: start; margin: 0 0 4px; padding: 1px 0 1px 10px;
+      border-left: 2px solid #d9d3c8; color: #6b6b66;
+      font-size: 13px; line-height: 1.45;
+    }
+    #real-demos .demo-goal::before {
+      content: "Instruction"; display: block; margin-bottom: 2px;
+      color: #a8a39c; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    }
+    .demo-pair h3.ok { color: #2f6b45; }
+    .demo-pair h3.bad { color: #9e4034; }
+    .demo-pair h3 span.ok { color: #2f6b45; }
+    .demo-pair h3 span.bad { color: #9e4034; }
+    #sim-demos .demo-pair h3.ok,
+    #sim-demos .demo-pair h3.bad,
+    #real-demos .demo-pair h3.ok,
+    #real-demos .demo-pair h3.bad {
+      display: inline-flex; align-items: center; margin: 0 0 6px;
+      padding: 3px 10px; border-radius: 999px; font-size: 13px;
+    }
+    #sim-demos .demo-pair h3.ok,
+    #real-demos .demo-pair h3.ok { color: #2f6b45; background: #e5f0e8; }
+    #sim-demos .demo-pair h3.bad,
+    #real-demos .demo-pair h3.bad { color: #9e4034; background: #f8e8e4; }
+    #sim-demos .demo-sub,
+    #sim-demos .demo-fault,
+    #sim-demos .demo-fault b,
+    #real-demos .demo-sub,
+    #real-demos .demo-fault,
+    #real-demos .demo-fault b {
+      font: 400 14px/1.35 "DM Sans", sans-serif; color: #3f3c38;
+    }
+    #sim-demos .demo-sub,
+    #real-demos .demo-sub { min-height: 1.35em; margin: 0 0 6px; }
     .demo-stage { background: #161412; border: 1px solid #2a2724; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
     .demo-stage video { display: block; width: 100%; max-height: 520px; background: #000; }
+    #sim-demos .demo-stage video { height: auto; aspect-ratio: 16 / 10; max-height: none; object-fit: contain; }
     .demo-missing { margin: 0; padding: 14px 16px; background: #fff; color: var(--muted); font-size: 13px; }
   </style>
 </head>
@@ -537,14 +574,16 @@
           </div>
           <div class="demo-pair">
             <div>
-              <h3><span class="demo-outcome" id="simExplicitOutcome">Success</span><span>Explicit</span></h3>
+              <h3 class="ok" id="simExplicitOutcome">Success</h3>
+              <p class="demo-sub" id="simExplicitSub">Explicit instruction</p>
               <div class="demo-stage">
                 <video id="simSuccess" controls playsinline preload="none"></video>
                 <p class="demo-missing" id="simSuccessMissing" hidden></p>
               </div>
             </div>
             <div>
-              <h3>Failure<span id="simFailLabel">Direct</span></h3>
+              <h3 class="bad">Failure</h3>
+              <p class="demo-fault demo-sub" id="simFailFault"></p>
               <div class="demo-stage">
                 <video id="simFail" controls playsinline preload="none"></video>
                 <p class="demo-missing" id="simFailMissing" hidden></p>
@@ -567,20 +606,22 @@
           </div>
           <div class="demo-pair">
             <div>
-              <h3>Success<span>Explicit</span></h3>
-              <p class="demo-goal" id="realExplicitPrompt"></p>
-              <div class="demo-stage">
-                <video id="realSuccess" controls playsinline preload="none"></video>
-                <p class="demo-missing" id="realSuccessMissing" hidden></p>
-              </div>
+              <h3 class="ok">Success</h3>
+              <p class="demo-sub">Explicit instruction</p>
             </div>
             <div>
-              <h3><span class="demo-outcome" id="realOutcome">Failure</span><span id="realFailLabel">Direct</span></h3>
-              <p class="demo-goal" id="realSettingPrompt"></p>
-              <div class="demo-stage">
-                <video id="realFail" controls playsinline preload="none"></video>
-                <p class="demo-missing" id="realFailMissing" hidden></p>
-              </div>
+              <h3 class="bad" id="realOutcome">Failure</h3>
+              <p class="demo-fault demo-sub" id="realFailFault"></p>
+            </div>
+            <p class="demo-goal" id="realExplicitPrompt"></p>
+            <p class="demo-goal" id="realSettingPrompt"></p>
+            <div class="demo-stage">
+              <video id="realSuccess" controls playsinline preload="none"></video>
+              <p class="demo-missing" id="realSuccessMissing" hidden></p>
+            </div>
+            <div class="demo-stage">
+              <video id="realFail" controls playsinline preload="none"></video>
+              <p class="demo-missing" id="realFailMissing" hidden></p>
             </div>
           </div>
         </div>
@@ -657,18 +698,162 @@
       return show;
     }
 
+    const FRAMES_FAULTS = {
+      BinFill: {
+        direct: ["ge", "Pick the wrong cube."],
+        reasoning: ["ge", "Pick the wrong cube."],
+        spatial: ["ge", "Pick the wrong cube."],
+        contextual: ["ge", "Pick the wrong cube."]
+      },
+      PickXtimes: {
+        direct: ["ge", "Too many picks."],
+        reasoning: ["ge", "Pick the wrong cube."],
+        spatial: ["ge", "Pick the wrong cube."],
+        contextual: ["ge", "Too many picks."]
+      },
+      SwingXtimes: {
+        direct: ["ge", "Too many swings."],
+        reasoning: ["ge", "Pick the wrong cube."],
+        spatial: ["ee", "Too few swings."],
+        contextual: ["ge", "Too many swings."]
+      },
+      StopCube: {
+        direct: ["ge", "Wait too long."],
+        reasoning: ["ge", "Wait too long."],
+        contextual: ["ge", "Wait too long."]
+      },
+      VideoUnmask: {
+        direct: ["ge", "Pick the wrong cube."],
+        reasoning: ["ge", "Pick the wrong cube."],
+        spatial: ["ge", "Pick the wrong cube."],
+        contextual: ["ge", "Pick the wrong cube."]
+      },
+      ButtonUnmask: {
+        direct: ["ge", "Pick the wrong cube."],
+        reasoning: ["ge", "Pick the wrong cube."],
+        spatial: ["ge", "Pick the wrong cube."],
+        contextual: ["ge", "Pick the wrong cube."]
+      },
+      VideoUnmaskSwap: {
+        direct: ["ge", "Pick the wrong cube."],
+        reasoning: ["ge", "Pick the wrong cube."],
+        spatial: ["ge", "Pick the wrong cube."],
+        contextual: ["ge", "Pick the wrong cube."]
+      },
+      ButtonUnmaskSwap: {
+        direct: ["ge", "Pick the wrong cube."],
+        reasoning: ["ee", "Forget to press the button."],
+        spatial: ["ge", "Pick the wrong cube."],
+        contextual: ["ge", "Pick the wrong cube."]
+      },
+      VideoRepick: {
+        direct: ["ge", "Too many picks."],
+        reasoning: ["ge", "Too many picks."],
+        contextual: ["ge", "Too many picks."]
+      },
+      VideoPlaceButton: {
+        direct: ["ge", "Place the wrong target."],
+        reasoning: ["ge", "Place the wrong target."],
+        contextual: ["ge", "Place the wrong target."]
+      },
+      VideoPlaceOrder: {
+        direct: ["ge", "Place the wrong target."],
+        reasoning: ["ge", "Place the wrong target."],
+        contextual: ["ge", "Place the wrong target."]
+      }
+    };
+    const GROUNDSG_FAULTS = {
+      BinFill: {
+        direct: ["ee", "Fail to execute the subgoal."],
+        reasoning: ["ge", "Skip a subgoal step."],
+        spatial: ["ee", "Fail to execute the subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      },
+      PickXtimes: {
+        direct: ["ge", "Skip a subgoal step."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        spatial: ["ee", "Fail to execute the subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      },
+      SwingXtimes: {
+        direct: ["ge", "Skip a subgoal step."],
+        reasoning: ["ge", "Skip a subgoal step."],
+        spatial: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ge", "Skip a subgoal step."]
+      },
+      StopCube: {
+        explicit: ["ml", "Cannot complete this task."],
+        direct: ["ml", "Cannot complete this task."],
+        reasoning: ["ml", "Cannot complete this task."],
+        contextual: ["ml", "Cannot complete this task."]
+      },
+      VideoUnmask: {
+        direct: ["ee", "Fail to execute the subgoal."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        spatial: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      },
+      ButtonUnmask: {
+        direct: ["ge", "Generate the wrong subgoal."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        spatial: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      },
+      VideoUnmaskSwap: {
+        direct: ["ge", "Generate the wrong subgoal."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        spatial: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      },
+      ButtonUnmaskSwap: {
+        direct: ["ge", "Generate the wrong subgoal."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        spatial: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ee", "Fail to execute the subgoal."]
+      },
+      VideoRepick: {
+        direct: ["ge", "Generate the wrong subgoal."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      },
+      VideoPlaceButton: {
+        direct: ["ge", "Generate the wrong subgoal."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      },
+      VideoPlaceOrder: {
+        direct: ["ge", "Generate the wrong subgoal."],
+        reasoning: ["ge", "Generate the wrong subgoal."],
+        contextual: ["ge", "Generate the wrong subgoal."]
+      }
+    };
+    function showFault(el, note) {
+      el.innerHTML = "";
+      if (!note) return;
+      const tag = document.createElement("b");
+      tag.className = note[0];
+      const faultName = { ge: "Grounding Error", ee: "Execution Error", ml: "Model Limitation" };
+      tag.textContent = faultName[note[0]] || "Grounding Error";
+      el.appendChild(tag);
+      if (note[1]) el.appendChild(document.createTextNode(": " + note[1]));
+    }
     const sim = { task: "BinFill", setting: "direct", model: "frames" };
     const showSimSuccess = bindPlayer(document.getElementById("simSuccess"), document.getElementById("simSuccessMissing"));
     const showSimFail = bindPlayer(document.getElementById("simFail"), document.getElementById("simFailMissing"));
     function renderSim() {
       if (sim.setting === "spatial" && NO_SPATIAL.includes(sim.task)) sim.setting = "direct";
-      const setting = IRG.find(s => s.id === sim.setting);
       fillButtons(document.getElementById("simTasks"), SIM_TASKS, sim.task, id => { sim.task = id; renderSim(); });
       fillButtons(document.getElementById("simSettings"), IRG, sim.setting, id => { sim.setting = id; renderSim(); }, item => item.id === "spatial" && NO_SPATIAL.includes(sim.task));
       fillButtons(document.getElementById("simModels"), SIM_MODELS, sim.model, id => { sim.model = id; renderSim(); });
       const explicitFail = sim.model === "groundsg" && sim.task === "StopCube";
-      document.getElementById("simExplicitOutcome").textContent = explicitFail ? "Failure" : "Success";
-      document.getElementById("simFailLabel").textContent = setting.name;
+      const explicitEl = document.getElementById("simExplicitOutcome");
+      explicitEl.textContent = explicitFail ? "Failure" : "Success";
+      explicitEl.className = explicitFail ? "bad" : "ok";
+      const taskFaults = (sim.model === "frames" ? FRAMES_FAULTS : GROUNDSG_FAULTS)[sim.task] || {};
+      const explicitSub = document.getElementById("simExplicitSub");
+      if (explicitFail && taskFaults.explicit) showFault(explicitSub, taskFaults.explicit);
+      else explicitSub.textContent = "Explicit instruction";
+      showFault(document.getElementById("simFailFault"), taskFaults[sim.setting]);
       showSimSuccess(`demos/sim/${sim.task}/${sim.model}/explicit/${explicitFail ? "demo_fail" : "demo"}.mp4`);
       showSimFail(`demos/sim/${sim.task}/${sim.model}/${sim.setting}/demo.mp4`);
     }
@@ -689,18 +874,33 @@
         contextual: "demos/web_realdemo/web_realdemo/count_contextual.mp4"
       }
     };
+    const REAL_FAULTS = {
+      PutInBox: {
+        direct: ["ee", "Fail to put in."],
+        reasoning: ["ge", "Select the wrong box."],
+        spatial: ["ee", "Fail to put in."],
+        contextual: ["ee", "Fail to pick up."]
+      },
+      PickByCount: {
+        direct: ["ge", "Too many picks."],
+        reasoning: ["ge", "Too many picks."],
+        contextual: ["ge", "Too many picks."]
+      }
+    };
     const real = { task: "PutInBox", setting: "direct" };
     const showRealSuccess = bindPlayer(document.getElementById("realSuccess"), document.getElementById("realSuccessMissing"));
     const showRealFail = bindPlayer(document.getElementById("realFail"), document.getElementById("realFailMissing"));
     function renderReal() {
-      const setting = IRG.find(s => s.id === real.setting);
       const spatialSucceeds = real.task === "PickByCount" && real.setting === "spatial";
       fillButtons(document.getElementById("realTasks"), REAL_TASKS, real.task, id => { real.task = id; renderReal(); });
       fillButtons(document.getElementById("realSettings"), IRG, real.setting, id => { real.setting = id; renderReal(); });
       document.getElementById("realExplicitPrompt").textContent = REAL_PROMPTS[real.task].explicit;
       document.getElementById("realSettingPrompt").textContent = REAL_PROMPTS[real.task][real.setting];
-      document.getElementById("realOutcome").textContent = spatialSucceeds ? "Success" : "Failure";
-      document.getElementById("realFailLabel").textContent = setting.name;
+      const realOut = document.getElementById("realOutcome");
+      realOut.textContent = spatialSucceeds ? "Success" : "Failure";
+      realOut.className = spatialSucceeds ? "ok" : "bad";
+      const realFaults = REAL_FAULTS[real.task] || {};
+      showFault(document.getElementById("realFailFault"), spatialSucceeds ? null : realFaults[real.setting]);
       showRealSuccess(REAL_FILES[real.task].explicit);
       showRealFail(REAL_FILES[real.task][real.setting]);
     }
